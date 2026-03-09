@@ -1,0 +1,33 @@
+{
+  "name": "@idenium/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "clean": "rm -rf .next .turbo"
+  },
+  "dependencies": {
+    "@idenium/sdk": "workspace:*",
+    "@idenium/shared": "workspace:*",
+    "@starknet-react/chains": "^3.1.0",
+    "@starknet-react/core": "^3.6.0",
+    "get-starknet-core": "^4.0.0",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-qr-code": "^2.0.15",
+    "starknet": "^6.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "typescript": "^5.7.0"
+  }
+}

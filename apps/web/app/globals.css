@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+:root {
+  --idenium-primary: #6366f1;
+  --idenium-primary-dark: #4f46e5;
+  --idenium-accent: #06b6d4;
+  --idenium-bg: #0a0a1a;
+  --idenium-surface: #111128;
+  --idenium-border: #1e1e3f;
+  --idenium-text: #e2e8f0;
+  --idenium-text-muted: #94a3b8;
+}
+
+body {
+  background: var(--idenium-bg);
+  color: var(--idenium-text);
+}
+
+/* IDenium Button Styles */
+.idenium-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--idenium-primary), var(--idenium-accent));
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.idenium-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.idenium-btn:active {
+  transform: translateY(0);
+}
+
+/* Modal Styles */
+.idenium-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadeIn 0.2s ease;
+}
+
+.idenium-modal {
+  background: var(--idenium-surface);
+  border: 1px solid var(--idenium-border);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+.idenium-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--idenium-text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.idenium-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.idenium-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.idenium-modal-body {
+  text-align: center;
+}
+
+.idenium-modal-body p {
+  color: var(--idenium-text-muted);
+  margin-bottom: 1rem;
+}
+
+.idenium-qr-container {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: inline-block;
+  margin: 1rem 0;
+}
+
+.idenium-modal-hint {
+  font-size: 0.875rem;
+}
+
+.idenium-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--idenium-border);
+  border-top-color: var(--idenium-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto;
+}
+
+.idenium-success .idenium-checkmark {
+  font-size: 3rem;
+  color: #22c55e;
+  margin-bottom: 1rem;
+}
+
+.idenium-error p {
+  color: #ef4444;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

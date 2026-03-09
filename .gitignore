@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.next/
+.turbo/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+
+# Cairo
+target/
+contracts/target/
+
+# Mobile
+apps/mobile/ios/Pods/
+apps/mobile/android/.gradle/
+apps/mobile/android/app/build/
+*.apk
+*.ipa
+
+# OS
+.DS_Store
+Thumbs.db
