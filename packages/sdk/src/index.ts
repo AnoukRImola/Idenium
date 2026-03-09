@@ -18,6 +18,7 @@ import type { AccountInterface } from "starknet";
 export { VerificationQueryBuilder } from "./query-builder";
 export { OnChainVerifier } from "./verifier";
 export { IDeniumBridge } from "./bridge";
+export { VerificationLevel, BridgeMessageType } from "@idenium/shared";
 export type {
   IDeniumConfig,
   VerificationRequest,
@@ -26,9 +27,7 @@ export type {
   ContractDetails,
   PassportProof,
   UserVerificationStatus,
-  VerificationLevel,
   BridgeMessage,
-  BridgeMessageType,
   UserVerifiedEvent,
 } from "@idenium/shared";
 

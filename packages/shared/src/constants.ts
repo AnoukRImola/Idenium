@@ -93,7 +93,19 @@ export const REGISTRY_ABI = [
     ],
   },
   {
-    name: "UserVerified",
+    name: "idenium::registry::IDeniumRegistry::Event",
+    type: "event",
+    kind: "enum",
+    variants: [
+      {
+        name: "UserVerified",
+        type: "idenium::registry::IDeniumRegistry::UserVerified",
+        kind: "nested",
+      },
+    ],
+  },
+  {
+    name: "idenium::registry::IDeniumRegistry::UserVerified",
     type: "event",
     kind: "struct",
     members: [

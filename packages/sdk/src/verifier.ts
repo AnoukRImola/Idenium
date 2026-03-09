@@ -73,11 +73,15 @@ export class OnChainVerifier {
     proof: PassportProof,
     walletAddress: string,
   ): Promise<string> {
-    const registryWithAccount = this.registryContract.connect(account);
+    const contract = new Contract(
+      REGISTRY_ABI as any,
+      this.registryContract.address,
+      account,
+    );
 
     const proofFelts = this.encodeProofAsFelts(proof);
 
-    const tx = await registryWithAccount.invoke("register", [
+    const tx = await contract.invoke("register", [
       proofFelts,
       walletAddress,
     ]);
