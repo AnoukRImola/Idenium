@@ -2,77 +2,78 @@
 # IDenium Contract Deployment Script for Starknet Sepolia
 #
 # Prerequisites:
-#   1. sncast installed (snfoundryup)
-#   2. Starknet account with Sepolia ETH
-#   3. Account configured: sncast account create --name idenium --network sepolia
+#   1. Fund the account: go to https://starknet-faucet.vercel.app/
+#      Address: 0x01d68ca9ed282ce3bf1b70be3ae5f42a3b3f2c5e3910e3b3cb57afe0c4e4fd5c
+#      Request STRK tokens (need ~0.01 STRK)
 #
-# Usage:
-#   cd contracts && bash scripts/deploy.sh
-
+#   2. Deploy the account:
+#      cd contracts && sncast --profile idenium account deploy --name idenium
+#
+#   3. Then run this script:
+#      bash scripts/deploy.sh
+#
 set -e
+cd "$(dirname "$0")/.."
 
-ACCOUNT_NAME="${ACCOUNT_NAME:-idenium}"
-RPC_URL="${RPC_URL:-https://starknet-sepolia.public.blastapi.io/rpc/v0_7}"
+PROFILE="idenium"
 
 echo "=== IDenium Contract Deployment ==="
-echo "Network: Sepolia"
-echo "Account: $ACCOUNT_NAME"
 echo ""
 
-# Step 1: Build contracts
-echo "[1/5] Building contracts..."
+# Step 1: Build
+echo "[1/4] Building contracts..."
 scarb build
 echo ""
 
-# Step 2: Declare Verifier
-echo "[2/5] Declaring IDeniumVerifier..."
-VERIFIER_DECLARE=$(sncast --account "$ACCOUNT_NAME" --url "$RPC_URL" \
-  declare --contract-name IDeniumVerifier 2>&1)
-echo "$VERIFIER_DECLARE"
-VERIFIER_CLASS_HASH=$(echo "$VERIFIER_DECLARE" | grep "class_hash:" | awk '{print $2}')
-echo "Verifier class hash: $VERIFIER_CLASS_HASH"
+# Step 2: Declare + Deploy Verifier
+echo "[2/4] Declaring IDeniumVerifier..."
+VERIFIER_RESULT=$(sncast --profile "$PROFILE" declare --contract-name IDeniumVerifier 2>&1)
+echo "$VERIFIER_RESULT"
+VERIFIER_CLASS_HASH=$(echo "$VERIFIER_RESULT" | grep "class_hash:" | awk '{print $2}')
+
+if [ -z "$VERIFIER_CLASS_HASH" ]; then
+  # Already declared — extract from error
+  VERIFIER_CLASS_HASH=$(echo "$VERIFIER_RESULT" | grep -oP '0x[0-9a-fA-F]+' | head -1)
+fi
+echo "  Class hash: $VERIFIER_CLASS_HASH"
 echo ""
 
-# Step 3: Deploy Verifier (dev_mode = true for hackathon)
-echo "[3/5] Deploying IDeniumVerifier..."
-# Constructor args: owner (your account address), dev_mode (1 = true)
-OWNER_ADDRESS=$(sncast --account "$ACCOUNT_NAME" --url "$RPC_URL" account address 2>&1 | grep "0x")
-VERIFIER_DEPLOY=$(sncast --account "$ACCOUNT_NAME" --url "$RPC_URL" \
-  deploy --class-hash "$VERIFIER_CLASS_HASH" \
-  --constructor-calldata "$OWNER_ADDRESS" 1 2>&1)
+echo "[3/4] Deploying IDeniumVerifier (dev_mode=true)..."
+OWNER=$(sncast --profile "$PROFILE" account address 2>&1 | grep -oP '0x[0-9a-fA-F]+')
+echo "  Owner: $OWNER"
+
+VERIFIER_DEPLOY=$(sncast --profile "$PROFILE" deploy \
+  --class-hash "$VERIFIER_CLASS_HASH" \
+  --constructor-calldata "$OWNER" 0x1 2>&1)
 echo "$VERIFIER_DEPLOY"
 VERIFIER_ADDRESS=$(echo "$VERIFIER_DEPLOY" | grep "contract_address:" | awk '{print $2}')
-echo "Verifier address: $VERIFIER_ADDRESS"
+echo "  Verifier address: $VERIFIER_ADDRESS"
 echo ""
 
-# Step 4: Declare Registry
-echo "[4/5] Declaring IDeniumRegistry..."
-REGISTRY_DECLARE=$(sncast --account "$ACCOUNT_NAME" --url "$RPC_URL" \
-  declare --contract-name IDeniumRegistry 2>&1)
-echo "$REGISTRY_DECLARE"
-REGISTRY_CLASS_HASH=$(echo "$REGISTRY_DECLARE" | grep "class_hash:" | awk '{print $2}')
-echo "Registry class hash: $REGISTRY_CLASS_HASH"
-echo ""
+# Step 3: Declare + Deploy Registry
+echo "[4/4] Declaring and deploying IDeniumRegistry..."
+REGISTRY_RESULT=$(sncast --profile "$PROFILE" declare --contract-name IDeniumRegistry 2>&1)
+echo "$REGISTRY_RESULT"
+REGISTRY_CLASS_HASH=$(echo "$REGISTRY_RESULT" | grep "class_hash:" | awk '{print $2}')
 
-# Step 5: Deploy Registry
-echo "[5/5] Deploying IDeniumRegistry..."
-REGISTRY_DEPLOY=$(sncast --account "$ACCOUNT_NAME" --url "$RPC_URL" \
-  deploy --class-hash "$REGISTRY_CLASS_HASH" \
-  --constructor-calldata "$OWNER_ADDRESS" "$VERIFIER_ADDRESS" 2>&1)
+if [ -z "$REGISTRY_CLASS_HASH" ]; then
+  REGISTRY_CLASS_HASH=$(echo "$REGISTRY_RESULT" | grep -oP '0x[0-9a-fA-F]+' | head -1)
+fi
+echo "  Class hash: $REGISTRY_CLASS_HASH"
+
+REGISTRY_DEPLOY=$(sncast --profile "$PROFILE" deploy \
+  --class-hash "$REGISTRY_CLASS_HASH" \
+  --constructor-calldata "$OWNER" "$VERIFIER_ADDRESS" 2>&1)
 echo "$REGISTRY_DEPLOY"
 REGISTRY_ADDRESS=$(echo "$REGISTRY_DEPLOY" | grep "contract_address:" | awk '{print $2}')
-echo "Registry address: $REGISTRY_ADDRESS"
+echo "  Registry address: $REGISTRY_ADDRESS"
 echo ""
 
-echo "=== Deployment Complete ==="
+echo "=== DONE ==="
 echo ""
-echo "Update packages/shared/src/constants.ts with:"
+echo "Update packages/shared/src/constants.ts:"
 echo ""
 echo "export const SEPOLIA_CONTRACTS = {"
 echo "  registry: \"$REGISTRY_ADDRESS\","
 echo "  verifier: \"$VERIFIER_ADDRESS\","
 echo "} as const;"
-echo ""
-echo "Class hashes:"
-echo "  Registry: $REGISTRY_CLASS_HASH"
-echo "  Verifier: $VERIFIER_CLASS_HASH"

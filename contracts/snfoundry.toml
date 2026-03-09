@@ -1,0 +1,5 @@
+
+[sncast.idenium]
+account = "idenium"
+accounts-file = "/home/anouk/.starknet_accounts/starknet_open_zeppelin_accounts.json"
+network = "sepolia"
