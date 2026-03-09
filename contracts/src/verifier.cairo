@@ -10,6 +10,7 @@
 #[starknet::contract]
 pub mod IDeniumVerifier {
     use starknet::ContractAddress;
+    use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
     use super::super::interface::IIDeniumVerifier;
 
     #[storage]
