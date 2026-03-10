@@ -10,13 +10,10 @@ export const RPC_URLS = {
   mainnet: "https://starknet-mainnet.public.blastapi.io/rpc/v0_7",
 } as const;
 
-/**
- * Contract addresses on Starknet Sepolia
- * These will be updated after deployment
- */
+/** Contract addresses on Starknet Sepolia */
 export const SEPOLIA_CONTRACTS = {
-  registry: "0x0", // TODO: Update after deployment
-  verifier: "0x0", // TODO: Update after deployment
+  registry: "0x0099c89a2c2a673f4dc95f15b426a5206b932b80867a2943cb8fb5ccd2dd2a27",
+  verifier: "0x0708d9c8fcf58a037ab734997b51636fa173dcbe0f5106337443db6c6a6ee554",
 } as const;
 
 /**
