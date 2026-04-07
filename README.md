@@ -181,4 +181,3 @@ MIT
 
 ---
 
-Built for the Starknet Hackathon 2025
